@@ -1,6 +1,7 @@
 import spacy
 import re
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+import requests
+import os
 
 class LegalSimplifier:
     def __init__(self):
@@ -10,13 +11,12 @@ class LegalSimplifier:
         except:
             self.nlp = None
         
-        # Load model and tokenizer directly
-        model_name = "t5-small"
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
+        self.api_url = "https://api-inference.huggingface.co/models/t5-small"
+        self.api_token = os.getenv("HF_TOKEN")
 
-        # Predefined dictionary for legal terms
-        self.legal_dict = {
+    def dictionary_simplify(self, text):
+        """Replaces complex legal terms using the dictionary."""
+        legal_dict = {
             r"\bhereinafter\b": "later in this document",
             r"\bpursuant to\b": "according to",
             r"\baforementioned\b": "previously mentioned",
@@ -40,11 +40,8 @@ class LegalSimplifier:
             r"\bi\.e\.\b": "that is",
             r"\be\.g\.\b": "for example",
         }
-
-    def dictionary_simplify(self, text):
-        """Replaces complex legal terms using the dictionary."""
         simplified_text = text
-        for pattern, replacement in self.legal_dict.items():
+        for pattern, replacement in legal_dict.items():
             simplified_text = re.sub(pattern, replacement, simplified_text, flags=re.IGNORECASE)
         return simplified_text
 
@@ -55,36 +52,40 @@ class LegalSimplifier:
             
         doc = self.nlp(text)
         sentences = [sent.text.strip() for sent in doc.sents]
-        
-        # Simple rule: if a sentence is too long (e.g. > 25 words), it might need splitting
-        # For now, we'll just return the segmented sentences joined by space
-        # AI step will handle the actual rewriting
         return " ".join(sentences)
 
     def ai_simplify(self, text):
-        """Uses Hugging Face Transformers to rewrite the text in simpler terms."""
-        # Break down text into sentences for better AI processing
+        """Uses Hugging Face Inference API to rewrite the text in simpler terms."""
         if not self.nlp:
             sentences = [text]
         else:
             doc = self.nlp(text)
             sentences = [sent.text.strip() for sent in doc.sents]
 
+        headers = {"Authorization": f"Bearer {self.api_token}"} if self.api_token else {}
         simplified_sentences = []
+        
         for sent in sentences:
-            if len(sent.split()) < 3: # Skip very short snippets
+            if len(sent.split()) < 3:
                 simplified_sentences.append(sent)
                 continue
                 
-            # AI simplification via manual inference
             try:
-                # For t5-small, we use a prompt
-                input_text = f"summarize: {sent}"
-                inputs = self.tokenizer.encode(input_text, return_tensors="pt", max_length=512, truncation=True)
-                outputs = self.model.generate(inputs, max_length=128, min_length=5, length_penalty=2.0, num_beams=4, early_stopping=True)
-                simplified_sentences.append(self.tokenizer.decode(outputs[0], skip_special_tokens=True))
+                payload = {"inputs": f"summarize: {sent}"}
+                response = requests.post(self.api_url, headers=headers, json=payload)
+                result = response.json()
+                
+                # Handle API list response
+                if isinstance(result, list) and len(result) > 0:
+                    summary = result[0].get('summary_text', sent)
+                    simplified_sentences.append(summary)
+                # Handle direct object response or error
+                elif isinstance(result, dict) and 'summary_text' in result:
+                    simplified_sentences.append(result['summary_text'])
+                else:
+                    simplified_sentences.append(sent)
             except Exception as e:
-                print(f"AI Error: {e}")
+                print(f"AI API Error: {e}")
                 simplified_sentences.append(sent)
 
         return " ".join(simplified_sentences)
@@ -94,16 +95,10 @@ class LegalSimplifier:
         # Stage 1: Dictionary Replacement
         text = self.dictionary_simplify(text)
         
-        # Stage 2: Sentence Segmentation / Basic Cleaning
+        # Stage 2: Sentence Segmentation
         text = self.spacy_simplify(text)
         
-        # Stage 3: AI Rewrite
+        # Stage 3: AI Rewrite (via API)
         text = self.ai_simplify(text)
         
         return text
-
-# Example usage (uncomment to test locally)
-# if __name__ == "__main__":
-#     simplifier = LegalSimplifier()
-#     test_text = "The parties hereto agree that the aforementioned agreement shall be interpreted pursuant to the laws of the state."
-#     print(simplifier.simplify(test_text))
