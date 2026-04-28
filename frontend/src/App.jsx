@@ -168,7 +168,9 @@ const SimplifierApp = () => {
 
         <section className="tool-section-new flex-grow min-h-0">
           {isLoading && <div className="scanning-bar" />}
-          <div className="relative flex-1">
+          
+          {/* Original Text Pane */}
+          <div className="relative flex-1 min-h-0">
             <textarea
               className="text-area-new w-full h-full"
               placeholder="Paste legal text here..."
@@ -177,6 +179,7 @@ const SimplifierApp = () => {
             />
           </div>
 
+          {/* Action Button */}
           <button className="magic-button" onClick={handleSimplify} disabled={isLoading}>
             {isLoading ? (
               <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
@@ -185,7 +188,8 @@ const SimplifierApp = () => {
             )}
           </button>
 
-          <div className="text-area-new result-area relative flex-1" style={{ fontStyle: simplifiedText ? 'normal' : 'italic', color: simplifiedText ? '#fff' : '#444' }}>
+          {/* Converted Text Pane */}
+          <div className="text-area-new result-area relative flex-1 min-h-0 w-full" style={{ fontStyle: simplifiedText ? 'normal' : 'italic', color: simplifiedText ? '#fff' : '#444' }}>
             {simplifiedText && (
               <div className="flex gap-3 z-10" style={{ position: 'absolute', top: '16px', right: '16px' }}>
                 <Download 
@@ -205,7 +209,9 @@ const SimplifierApp = () => {
                 />
               </div>
             )}
-            {simplifiedText || "// AWAITING_INITIALIZATION..."}
+            <div className="w-full h-full overflow-y-auto">
+              {simplifiedText || "// AWAITING_INITIALIZATION..."}
+            </div>
           </div>
         </section>
       </section>

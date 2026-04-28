@@ -398,6 +398,8 @@ body {
 
 /* Footer */
 /* Utility Classes */
+.w-full { width: 100%; }
+.h-full { height: 100%; }
 .flex { display: flex; }
 .flex-col { flex-direction: column; }
 .flex-1 { flex: 1; }
