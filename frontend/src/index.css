@@ -553,6 +553,10 @@ body {
     padding: 0 16px;
   }
 
+  .header .label-text-pixel {
+    font-size: 14px !important; /* Smaller logo in mobile */
+  }
+
   .header {
     top: 16px;
     left: 16px;
@@ -560,22 +564,25 @@ body {
 
   /* Hero */
   .hero {
-    padding: 160px 0 60px;
+    padding: 140px 0 60px;
   }
 
   .hero h1 {
-    font-size: 32px;
+    font-size: 28px;
     letter-spacing: 1px;
   }
 
   .hero p {
-    font-size: 16px;
+    font-family: 'Space Mono', monospace; /* Matching pixel/tech aesthetic */
+    font-size: 13px; /* Smaller to fit better */
+    line-height: 1.5;
     margin-bottom: 32px;
+    padding: 0 10px;
   }
 
   .btn-large {
     padding: 14px 32px;
-    font-size: 16px;
+    font-size: 15px;
   }
 
   /* Tool Section */
@@ -587,7 +594,7 @@ body {
   }
 
   .tool-header-new {
-    display: none; /* Hide labels on very small screens or stack them */
+    display: none;
   }
 
   .text-area-new {
@@ -621,13 +628,14 @@ body {
 
   /* Features */
   .features-section {
-    margin-top: 100px;
+    margin-top: 150px; /* Pushed further down */
     padding-bottom: 100px;
   }
 
   .features-title {
-    font-size: 20px;
+    font-size: 18px; /* Slightly smaller */
     letter-spacing: 2px;
+    line-height: 1.4;
   }
 
   .features-grid {
