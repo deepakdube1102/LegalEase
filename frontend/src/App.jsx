@@ -170,7 +170,7 @@ const SimplifierApp = () => {
           {isLoading && <div className="scanning-bar" />}
           
           {/* Original Text Pane */}
-          <div className="relative flex-[1.5] min-h-0">
+          <div className="relative flex-1 min-h-0">
             <textarea
               className="text-area-new w-full h-full"
               placeholder="Paste legal text here..."
@@ -180,7 +180,7 @@ const SimplifierApp = () => {
           </div>
 
           {/* Action Button */}
-          <button className="magic-button" onClick={handleSimplify} disabled={isLoading} style={{ transform: 'translateY(10px)' }}>
+          <button className="magic-button" onClick={handleSimplify} disabled={isLoading} style={{ transform: 'translateY(15px)' }}>
             {isLoading ? (
               <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
             ) : (
