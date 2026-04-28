@@ -159,7 +159,7 @@ const SimplifierApp = () => {
   };
 
   return (
-    <div className="container page-transition" style={{ minHeight: '100vh', display: 'flex', flexFlow: 'column', padding: '20px 24px 40px' }}>
+    <div className="container page-transition" style={{ height: '100vh', display: 'flex', flexFlow: 'column', padding: '20px 24px 40px' }}>
       <section className="tool-section-wrapper flex-1 flex flex-col min-h-0">
         <div className="tool-header-new">
           <div className="label-text-pixel">Original Legal Text</div>

@@ -214,7 +214,7 @@ body {
 
 /* New Tool Layout */
 .tool-section-wrapper {
-  padding-top: 60px; /* Shifted down */
+  padding-top: 20px; /* Reduced from 60px to give more room */
   margin-bottom: 0; /* Removed to stretch till diagnostics */
 }
 
