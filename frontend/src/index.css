@@ -622,7 +622,7 @@ body {
     top: auto;
     left: auto;
     transform: none;
-    margin: 24px auto 24px; /* Increased vertical margin to shift it down */
+    margin: 60px auto 30px; /* Signifcantly increased to shift it down further */
     width: 100%;
     height: 48px;
     border-radius: 12px;
