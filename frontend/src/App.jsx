@@ -168,13 +168,14 @@ const SimplifierApp = () => {
 
         <section className="tool-section-new flex-grow min-h-0">
           {isLoading && <div className="scanning-bar" />}
-          <textarea
-            className="text-area-new"
-            placeholder="Paste legal text here..."
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            style={{ height: '100%' }}
-          />
+          <div className="relative flex-1">
+            <textarea
+              className="text-area-new w-full h-full"
+              placeholder="Paste legal text here..."
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+            />
+          </div>
 
           <button className="magic-button" onClick={handleSimplify} disabled={isLoading}>
             {isLoading ? (
@@ -184,25 +185,26 @@ const SimplifierApp = () => {
             )}
           </button>
 
-          <div className="text-area-new result-area relative" style={{ height: '100%', fontStyle: simplifiedText ? 'normal' : 'italic', color: simplifiedText ? '#fff' : '#444' }}>
-            <div className="flex gap-3 z-10" style={{ position: 'absolute', top: '16px', right: '16px' }}>
-              <Download 
-                size={14} 
-                className="text-emerald-500 cursor-pointer hover:text-white transition-all" 
-                onClick={handleExport}
-                title="Download as .doc"
-              />
-              <Copy 
-                size={14} 
-                className="text-emerald-500 cursor-pointer hover:text-white transition-all" 
-                onClick={() => {
-                  if (!simplifiedText) return;
-                  navigator.clipboard.writeText(simplifiedText);
-                  alert('Copied to clipboard!');
-                }} 
-                title="Copy to clipboard"
-              />
-            </div>
+          <div className="text-area-new result-area relative flex-1" style={{ fontStyle: simplifiedText ? 'normal' : 'italic', color: simplifiedText ? '#fff' : '#444' }}>
+            {simplifiedText && (
+              <div className="flex gap-3 z-10" style={{ position: 'absolute', top: '16px', right: '16px' }}>
+                <Download 
+                  size={14} 
+                  className="text-emerald-500 cursor-pointer hover:text-white transition-all" 
+                  onClick={handleExport}
+                  title="Download as .doc"
+                />
+                <Copy 
+                  size={14} 
+                  className="text-emerald-500 cursor-pointer hover:text-white transition-all" 
+                  onClick={() => {
+                    navigator.clipboard.writeText(simplifiedText);
+                    alert('Copied to clipboard!');
+                  }} 
+                  title="Copy to clipboard"
+                />
+              </div>
+            )}
             {simplifiedText || "// AWAITING_INITIALIZATION..."}
           </div>
         </section>
