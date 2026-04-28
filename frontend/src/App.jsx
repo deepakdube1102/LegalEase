@@ -170,9 +170,9 @@ const SimplifierApp = () => {
           {isLoading && <div className="scanning-bar" />}
           
           {/* Original Text Pane */}
-          <div className="relative flex-1 min-h-0">
+          <div className="text-area-new input-area relative flex-1 min-h-0">
             <textarea
-              className="text-area-new w-full h-full"
+              className="w-full h-full bg-transparent border-none outline-none text-white resize-none"
               placeholder="Paste legal text here..."
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
