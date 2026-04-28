@@ -614,7 +614,7 @@ body {
   }
 
   .text-area-new {
-    height: 250px;
+    height: 300px !important; /* Explicit height to prevent collapse on mobile */
     padding: 16px;
     font-size: 13px;
   }
