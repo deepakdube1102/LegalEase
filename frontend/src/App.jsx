@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Wand2, Brain, Languages, BarChart, Zap, Copy, Shield, Download, Scale, Info } from 'lucide-react';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 // --- Shared Components ---
 
