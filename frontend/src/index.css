@@ -400,6 +400,11 @@ body {
 /* Utility Classes */
 .w-full { width: 100%; }
 .h-full { height: 100%; }
+.bg-transparent { background: transparent; }
+.border-none { border: none; }
+.outline-none { outline: none; }
+.text-white { color: #ffffff; }
+.resize-none { resize: none; }
 .flex { display: flex; }
 .flex-col { flex-direction: column; }
 .flex-1 { flex: 1; }
