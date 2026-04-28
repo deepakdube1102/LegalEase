@@ -191,44 +191,24 @@ body {
 .btn-large {
   background: var(--primary-color);
   color: #000;
-  padding: 18px 56px;
-  font-family: 'Silkscreen', cursive; /* Using the pixel font */
-  font-size: 16px;
+  padding: 16px 48px;
+  font-family: 'Silkscreen', cursive;
+  font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
-  border-radius: 4px; /* More angular for robotic look */
-  border: none;
+  border-radius: 0; /* Sharp robotic corners */
+  border: 1px solid var(--primary-color);
   cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 0 20px var(--primary-glow);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  animation: pulse-glow 2s infinite;
+  transition: all 0.2s ease;
+  display: block; /* For centering */
+  margin: 0 auto; /* Horizontal centering */
 }
 
 .btn-large:hover {
-  transform: scale(1.05) translateY(-2px);
-  box-shadow: 0 0 40px var(--primary-glow), inset 0 0 10px rgba(255,255,255,0.4);
-  background: #fff; /* Flash white on hover for high-tech feel */
-}
-
-.btn-large::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
-  transform: rotate(45deg);
-  transition: 0.5s;
-  pointer-events: none;
-}
-
-.btn-large:hover::after {
-  left: 100%;
-  top: 100%;
+  background: transparent;
+  color: var(--primary-color);
+  box-shadow: none;
 }
 
 /* New Tool Layout */
