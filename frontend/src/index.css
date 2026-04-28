@@ -258,6 +258,13 @@ body {
 
 .result-area {
   overflow-y: auto;
+  background: #0a0a0a;
+}
+
+.action-buttons-container {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
 }
 
 .magic-button {
@@ -614,7 +621,18 @@ body {
   .text-area-new {
     height: 250px;
     padding: 16px;
+    padding-bottom: 40px; /* Space for buttons if inside, but we move them outside */
     font-size: 13px;
+  }
+
+  .action-buttons-container {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin-top: 12px;
+    justify-content: flex-end;
+    gap: 20px; /* Space between them */
+    padding-right: 8px;
   }
 
   .magic-button {

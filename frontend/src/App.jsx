@@ -191,15 +191,15 @@ const SimplifierApp = () => {
           {/* Converted Text Pane */}
           <div className="text-area-new result-area relative flex-1 min-h-0 w-full" style={{ fontStyle: simplifiedText ? 'normal' : 'italic', color: simplifiedText ? '#fff' : '#444' }}>
             {simplifiedText && (
-              <div className="flex gap-3 z-10" style={{ position: 'absolute', bottom: '16px', right: '16px' }}>
+              <div className="action-buttons-container flex gap-4 z-10">
                 <Download 
-                  size={14} 
+                  size={18} 
                   className="text-emerald-500 cursor-pointer hover:text-white transition-all" 
                   onClick={handleExport}
                   title="Download as .doc"
                 />
                 <Copy 
-                  size={14} 
+                  size={18} 
                   className="text-emerald-500 cursor-pointer hover:text-white transition-all" 
                   onClick={() => {
                     navigator.clipboard.writeText(simplifiedText);
