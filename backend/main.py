@@ -61,6 +61,7 @@ class SimplificationResponse(BaseModel):
     simplified_text: str
 
 @app.post("/simplify", response_model=SimplificationResponse)
+@app.post("/_/backend/simplify", response_model=SimplificationResponse)
 async def simplify_text(request: SimplificationRequest):
     if not request.text.strip():
         raise HTTPException(status_code=400, detail="Text cannot be empty")
@@ -75,6 +76,8 @@ async def simplify_text(request: SimplificationRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
+@app.get("/_/backend")
+@app.get("/_/backend/")
 async def root():
     return {"message": "LegalEase API is running"}
 
