@@ -51,12 +51,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize the simplifier safely
-try:
-    simplifier = LegalSimplifier()
-except Exception as e:
-    print(f"Failed to initialize LegalSimplifier: {e}")
-    simplifier = None
+# Global simplifier instance
+_simplifier_instance = None
+
+def get_simplifier():
+    global _simplifier_instance
+    if _simplifier_instance is None:
+        try:
+            from simplifier import LegalSimplifier
+            _simplifier_instance = LegalSimplifier()
+        except Exception as e:
+            print(f"Failed to load LegalSimplifier: {e}")
+    return _simplifier_instance
 
 class SimplificationRequest(BaseModel):
     text: str
@@ -72,9 +78,10 @@ async def simplify_text(request: SimplificationRequest):
         raise HTTPException(status_code=400, detail="Text cannot be empty")
     
     try:
-        if not simplifier:
-            raise Exception("Simplifier service is not initialized")
-        simplified = simplifier.simplify(request.text)
+        instance = get_simplifier()
+        if not instance:
+            raise Exception("Simplifier service failed to load")
+        simplified = instance.simplify(request.text)
         return {
             "original_text": request.text,
             "simplified_text": simplified
@@ -91,10 +98,11 @@ async def root():
 @app.get("/status")
 @app.get("/_/backend/status")
 async def status():
+    instance = get_simplifier()
     return {
-        "status": "online",
-        "nlp_ready": simplifier.nlp is not None if simplifier else False,
-        "ai_ready": simplifier.client is not None if simplifier else False
+        "status": "online" if instance else "error",
+        "nlp_ready": (instance.nlp is not None and instance.nlp != "not_loaded") if instance else False,
+        "ai_ready": (instance.client is not None and instance.client != "not_loaded") if instance else False
     }
 
 if __name__ == "__main__":

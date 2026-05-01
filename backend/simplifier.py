@@ -1,25 +1,37 @@
-import spacy
 import re
-import requests
 import os
-from google import genai
 from dotenv import load_dotenv
 
 load_dotenv()
 
 class LegalSimplifier:
     def __init__(self):
-        # Load spaCy model
-        try:
-            self.nlp = spacy.load("en_core_web_sm")
-        except:
-            self.nlp = None
-            
+        self.nlp = "not_loaded"
+        self.client = "not_loaded"
         self.gemini_key = os.getenv("GEMINI_API_KEY")
-        if self.gemini_key:
-            self.client = genai.Client(api_key=self.gemini_key)
-        else:
-            self.client = None
+
+    def _get_nlp(self):
+        if self.nlp == "not_loaded":
+            try:
+                import spacy
+                self.nlp = spacy.load("en_core_web_sm")
+            except Exception as e:
+                print(f"Lazy NLP Load Error: {e}")
+                self.nlp = None
+        return self.nlp
+
+    def _get_client(self):
+        if self.client == "not_loaded":
+            try:
+                if self.gemini_key:
+                    from google import genai
+                    self.client = genai.Client(api_key=self.gemini_key)
+                else:
+                    self.client = None
+            except Exception as e:
+                print(f"Lazy Client Load Error: {e}")
+                self.client = None
+        return self.client
 
     def dictionary_simplify(self, text):
         """Replaces complex legal terms using the dictionary."""
@@ -115,16 +127,18 @@ class LegalSimplifier:
 
     def spacy_simplify(self, text):
         """Uses spaCy to segment and slightly simplify sentence structure."""
-        if not self.nlp:
+        nlp = self._get_nlp()
+        if not nlp:
             return text
             
-        doc = self.nlp(text)
+        doc = nlp(text)
         sentences = [sent.text.strip() for sent in doc.sents]
         return " ".join(sentences)
 
     def gemini_simplify(self, text):
         """Uses Google Gemini API to completely rewrite the text in plain English."""
-        if not self.client:
+        client = self._get_client()
+        if not client:
             return None # Signal to use fallback
             
         prompt = (
@@ -139,7 +153,7 @@ class LegalSimplifier:
         )
         
         try:
-            response = self.client.models.generate_content(
+            response = client.models.generate_content(
                 model="gemini-1.5-flash",
                 contents=prompt
             )
@@ -161,8 +175,9 @@ class LegalSimplifier:
         text = self.dictionary_simplify(text)
         
         # Stage 3: Sentence Segmentation & run-on cleanup
-        if self.nlp:
-            doc = self.nlp(text)
+        nlp = self._get_nlp()
+        if nlp:
+            doc = nlp(text)
             sentences = [sent.text.strip() for sent in doc.sents]
             final_text = " ".join(sentences)
         else:
