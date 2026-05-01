@@ -9,6 +9,7 @@ class LegalSimplifier:
         self.nlp = "not_loaded"
         self.client = "not_loaded"
         self.gemini_key = os.getenv("GEMINI_API_KEY")
+        self.last_error = None
 
     def _get_nlp(self):
         if self.nlp == "not_loaded":
@@ -158,8 +159,10 @@ class LegalSimplifier:
                 contents=prompt
             )
             if response.text:
+                self.last_error = None
                 return response.text.strip()
         except Exception as e:
+            self.last_error = str(e)
             print(f"Gemini API Error: {e}")
             
         return None

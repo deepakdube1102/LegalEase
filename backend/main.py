@@ -82,9 +82,14 @@ async def simplify_text(request: SimplificationRequest):
         if not instance:
             raise Exception("Simplifier service failed to load")
         simplified = instance.simplify(request.text)
+        
+        # If Gemini failed, let's see why
+        error_msg = getattr(instance, 'last_error', None)
+        
         return {
             "original_text": request.text,
-            "simplified_text": simplified
+            "simplified_text": simplified,
+            "error": error_msg
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
