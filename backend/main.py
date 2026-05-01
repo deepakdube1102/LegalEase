@@ -99,10 +99,17 @@ async def root():
 @app.get("/_/backend/status")
 async def status():
     instance = get_simplifier()
+    if not instance:
+        return {"status": "error", "message": "Simplifier instance not created"}
+        
+    # Trigger lazy loading checks
+    nlp = instance._get_nlp()
+    client = instance._get_client()
+    
     return {
-        "status": "online" if instance else "error",
-        "nlp_ready": (instance.nlp is not None and instance.nlp != "not_loaded") if instance else False,
-        "ai_ready": (instance.client is not None and instance.client != "not_loaded") if instance else False
+        "status": "online",
+        "nlp_ready": nlp is not None,
+        "ai_ready": client is not None
     }
 
 if __name__ == "__main__":
