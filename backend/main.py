@@ -5,6 +5,7 @@ from simplifier import LegalSimplifier
 import uvicorn
 import subprocess
 import os
+import platform
 
 def kill_port_process(port):
     """Automatically find and kill any process using the specified port."""
@@ -50,8 +51,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize the simplifier
-simplifier = LegalSimplifier()
+# Initialize the simplifier safely
+try:
+    simplifier = LegalSimplifier()
+except Exception as e:
+    print(f"Failed to initialize LegalSimplifier: {e}")
+    simplifier = None
 
 class SimplificationRequest(BaseModel):
     text: str
@@ -67,6 +72,8 @@ async def simplify_text(request: SimplificationRequest):
         raise HTTPException(status_code=400, detail="Text cannot be empty")
     
     try:
+        if not simplifier:
+            raise Exception("Simplifier service is not initialized")
         simplified = simplifier.simplify(request.text)
         return {
             "original_text": request.text,
@@ -81,6 +88,16 @@ async def simplify_text(request: SimplificationRequest):
 async def root():
     return {"message": "LegalEase API is running"}
 
+@app.get("/status")
+@app.get("/_/backend/status")
+async def status():
+    return {
+        "status": "online",
+        "nlp_ready": simplifier.nlp is not None if simplifier else False,
+        "ai_ready": simplifier.client is not None if simplifier else False
+    }
+
 if __name__ == "__main__":
-    kill_port_process(8000)
+    if platform.system() == "Windows":
+        kill_port_process(8000)
     uvicorn.run(app, host="0.0.0.0", port=8000)
